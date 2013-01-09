@@ -1,6 +1,6 @@
 # /bin/bash
 #
-# GitlabHQ / GitlabCI installation script. OSX 10.8 and up.
+# Gitolite / GitlabHQ / GitlabCI installation script. OSX 10.8 and up.
 # Author: Marin Usalj [mneorr@gmail.com]
 
 

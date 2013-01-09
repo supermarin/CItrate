@@ -1,3 +1,8 @@
+# /bin/bash
+#
+# Gitolite / GitlabHQ / GitlabCI installation script. OSX 10.8 and up.
+# Author: Marin Usalj [mneorr@gmail.com]
+
 WORKING_DIR=$(pwd)
 # CREATE USERS
 create_user() {
