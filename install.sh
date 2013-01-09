@@ -27,7 +27,7 @@ install_bundler() {
 }
 install_charlock_holmes() {
   if [[ `gem list charlock_holmes` != *charlock_holmes* ]]; then
-    sudo gem install charlock_holmes --version '0.6.8' --no-ri --no-rdoc
+    sudo gem install charlock_holmes --version '0.6.9' --no-ri --no-rdoc
     echo "Installed charlock holmes."
   fi
 }

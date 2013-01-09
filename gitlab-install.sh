@@ -4,7 +4,7 @@
 # Author: Marin Usalj [mneorr@gmail.com]
 
 WORKING_DIR=$(pwd)
-# CREATE USERS
+
 create_user() {
   dscl . -create /Users/$1
   # dscl . -passwd /Users/$1 PASSWORD
@@ -16,15 +16,17 @@ create_user() {
   chown -R $1:staff /Users/$1
   dscl . -create /Users/$1 NFSHomeDirectory /Users/$1
 }
+
 create_user git
 create_user gitlab
 echo "Created users!"
 
-cd /Users/git
+# GENERATE GITLAB SSH KEYS
+sudo -u gitlab -i mkdir -p /Users/gitlab/.ssh
+sudo -u gitlab ssh-keygen -q -N '' -t rsa -f /Users/gitlab/.ssh/id_rsa
 
-  # GENERATE SSH KEY
-  sudo -u git -i mkdir -p .ssh
-  sudo -u git ssh-keygen -q -N '' -t rsa -f .ssh/id_rsa
+
+cd /Users/git
 
   # CLONE / INSTALL GITOLITE
   sudo -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git
@@ -32,28 +34,62 @@ cd /Users/git
   sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/Users/git/bin" "export PATH" >> /Users/git/.profile'
   sudo -u git -H sh -c 'gitolite/install -ln /Users/git/bin'
 
-  # COPY SSH PUBLIC KEY
-  sudo -u git -H ln -s .ssh/id_rsa.pub GitlabAdmin.pub
+  # COPY GITLAB'S SSH PUBLIC KEY
+  sudo -u git -H ln -s /Users/gitlab/.ssh/id_rsa.pub GitlabAdmin.pub
   chmod 0444 GitlabAdmin.pub
 
   #INITIALIZE GITOLITE
   sudo -u git -i gitolite/src/gitolite setup -pk GitlabAdmin.pub
 
+  # SET CONFIG PERMISSIONS
+  sudo chmod 750 /Users/git/.gitolite/
+  sudo chown -R git:git /Users/git/.gitolite/
+
   # SET REPOSITORIES PERMISSIONS
-  chmod -R g+rwX /Users/git/repositories/
-  chown -R git /Users/git/repositories/
+  sudo chmod -R ug+rwXs,o-rwx /Users/git/repositories/
+  sudo chown -R git:git /Users/git/repositories/
   echo "Installed gitolite."
 
-cd $WORKING_DIR
 
+# CLONE / INSTALL GITLAB
 cd /Users/gitlab
 
-  #TEST - NOT NEEDED!
-
+  #TEST
   sudo -u gitlab -i git clone git@localhost:gitolite-admin
   rm -rf gitolite-admin
 
   # CLONE GITLABHQ
-  sudo -u gitlab -i git clone -b stable git://github.com/gitlabhq/gitlabhq.git
+  sudo -u gitlab -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+  
+  cd gitlab
+    sudo -u gitlab -H git checkout 4-0-stable
+    
+    # MAKE SURE GITLAB CAN WRITE TO THE LOG/ AND TMP/ DIRECTORIES
+    sudo chown -R gitlab log/
+    sudo chown -R gitlab tmp/
+    sudo chmod -R u+rwX  log/
+    sudo chmod -R u+rwX  tmp/
+
+    # COPY STANDARD CONFIGURATION FILES
+    sudo -u gitlab -H cp config/gitlab.yml.example config/gitlab.yml
+    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
+
+    # SETUP GITLAB HOOKS
+    sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
+    sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
+
+    # INSTALL GEMS
+    sudo -u gitlab -H bundle install --deployment --without development test mysql
+    echo "Installed Gitlab."
+
+
+
+# CONFIGURE GITLAB
+
+# CONFIGURE GIT
+sudo -u gitlab -H git config --global user.name "GitLab"
+sudo -u gitlab -H git config --global user.email "gitlab@localhost"
+
+
 
 cd $WORKING_DIR
