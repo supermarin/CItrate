@@ -42,6 +42,7 @@ install_postgres() { # WARNING!!! THIS COULD ERASE THE DATA!!!!
     initdb /usr/local/var/postgres -E utf8 # Initialize 
     ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents # Make it load on every boot
     launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist # Load it now
+    createuser -S postgres
     echo "Installed Postgres"
   else
     echo "Postgres was already installed"

@@ -5,15 +5,19 @@
 
 WORKING_DIR=$(pwd)
 
+create_group() {
+  dscl . create /Groups/git
+  dscl . create /Groups/git gid 789
+}
 create_user() {
   dscl . -create /Users/$1
   # dscl . -passwd /Users/$1 PASSWORD
   dscl . -create /Users/$1 UserShell /bin/bash
   dscl . -create /Users/$1 RealName "$1"
   dscl . -create /Users/$1 UniqueID $RANDOM
-  dscl . -create /Users/$1 PrimaryGroupID 20 # 20 - staff
+  dscl . -create /Users/$1 PrimaryGroupID 789
   mkdir -p /Users/$1
-  chown -R $1:staff /Users/$1
+  chown -R $1:git /Users/$1
   dscl . -create /Users/$1 NFSHomeDirectory /Users/$1
 }
 
