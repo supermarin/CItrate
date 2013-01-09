@@ -75,21 +75,12 @@ cd /Users/gitlab
     sudo -u gitlab cp config/database.yml.postgresql config/database.yml
 
     # SETUP GITLAB HOOKS
-    sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
-    sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
+    sudo cp ./lib/hooks/post-receive /Users/git/.gitolite/hooks/common/post-receive
+    sudo chown git:git /Users/git/.gitolite/hooks/common/post-receive
 
     # INSTALL GEMS
     sudo -u gitlab -H bundle install --deployment --without development test mysql
     echo "Installed Gitlab."
-
-
-
-# CONFIGURE GITLAB
-
-# CONFIGURE GIT
-sudo -u gitlab -H git config --global user.name "GitLab"
-sudo -u gitlab -H git config --global user.email "gitlab@localhost"
-
 
 
 cd $WORKING_DIR

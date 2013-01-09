@@ -57,4 +57,8 @@ mysql.server start
 echo "Configured MySql."
 
 # INSTALL GITOLITE AND GITLAB
-sudo bash gitlab-install.sh
+sudo sh gitlab-install.sh
+
+# CONFIGURE GIT
+sudo -u gitlab -H git config --global user.name "GitLab"
+sudo -u gitlab -H git config --global user.email "gitlab@localhost"
