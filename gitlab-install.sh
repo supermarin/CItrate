@@ -25,7 +25,6 @@ echo "Created users!"
 sudo -u gitlab -i mkdir -p /Users/gitlab/.ssh
 sudo -u gitlab ssh-keygen -q -N '' -t rsa -f /Users/gitlab/.ssh/id_rsa
 
-
 cd /Users/git
 
   # CLONE / INSTALL GITOLITE
@@ -82,5 +81,13 @@ cd /Users/gitlab
     sudo -u gitlab -H bundle install --deployment --without development test mysql
     echo "Installed Gitlab."
 
+    # CONFIGURE DATABASE (PostgreSQL)
+    createuser -S gitlab
+    createdb -Ogitlab gitlabhq_production
+    sudo perl -pi -e 's/postgres$/gitlab/g' config/database.yml
+    sudo perl -pi -e 's/# host: localhost/host: localhost/' config/database.yml
+    
+    # INITIALIZE DATABASE AND ACTIVATE ADVANCED FEATURES
+    sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 cd $WORKING_DIR
