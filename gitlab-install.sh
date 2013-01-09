@@ -3,24 +3,23 @@
 # Gitolite / GitlabHQ / GitlabCI installation script. OSX 10.8 and up.
 # Author: Marin Usalj [mneorr@gmail.com]
 
-WORKING_DIR=$(pwd)
-
 create_group() {
-  dscl . create /Groups/git
-  dscl . create /Groups/git gid 789
+  dscl . -create /Groups/git
+  dscl . -append /Groups/git gid 789
 }
 create_user() {
   dscl . -create /Users/$1
   # dscl . -passwd /Users/$1 PASSWORD
-  dscl . -create /Users/$1 UserShell /bin/bash
-  dscl . -create /Users/$1 RealName "$1"
-  dscl . -create /Users/$1 UniqueID $RANDOM
-  dscl . -create /Users/$1 PrimaryGroupID 789
+  dscl . -append /Users/$1 UserShell /bin/bash
+  dscl . -append /Users/$1 RealName "$1"
+  dscl . -append /Users/$1 UniqueID $RANDOM
+  dscl . -append /Users/$1 PrimaryGroupID 789
   mkdir -p /Users/$1
   chown -R $1:git /Users/$1
-  dscl . -create /Users/$1 NFSHomeDirectory /Users/$1
+  dscl . -append /Users/$1 NFSHomeDirectory /Users/$1
 }
 
+create_group
 create_user git
 create_user gitlab
 echo "Created users!"
@@ -86,12 +85,10 @@ cd /Users/gitlab
     echo "Installed Gitlab."
 
     # CONFIGURE DATABASE (PostgreSQL)
-    createuser -S gitlab
-    createdb -Ogitlab gitlabhq_production
+    sudo -u $(whoami) createuser -S gitlab
+    sudo -u $(whoami) createdb -Ogitlab gitlabhq_production
     sudo perl -pi -e 's/postgres$/gitlab/g' config/database.yml
     sudo perl -pi -e 's/# host: localhost/host: localhost/' config/database.yml
     
     # INITIALIZE DATABASE AND ACTIVATE ADVANCED FEATURES
     sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
-
-cd $WORKING_DIR
