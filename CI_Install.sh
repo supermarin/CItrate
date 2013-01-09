@@ -56,5 +56,5 @@ mysql.server start
 /usr/local/opt/mysql/bin/mysqladmin -u root password 'PASSWORD'
 echo "Configured MySql."
 
-INSTALL GITOLITE AND GITLAB
+# INSTALL GITOLITE AND GITLAB
 sudo bash gitlab-install.sh

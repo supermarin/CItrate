@@ -23,9 +23,9 @@ cd /Users/git
 
   # CLONE / INSTALL GITOLITE
   sudo -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git
-  sudo -u git mkdir bin
-  sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/home/git/bin" "export PATH" >> /home/git/.profile'
-  sudo -u git -H sh -c 'gitolite/install -ln /home/git/bin'
+  sudo -u git -H mkdir /Users/git/bin
+  sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/Users/git/bin" "export PATH" >> /Users/git/.profile'
+  sudo -u git -H sh -c 'gitolite/install -ln /Users/git/bin'
 
   # COPY SSH PUBLIC KEY
   sudo -u git -H ln -s .ssh/id_rsa.pub GitlabAdmin.pub
@@ -44,7 +44,7 @@ cd $WORKING_DIR
 cd /Users/gitlab
 
   #TEST - NOT NEEDED!
-  
+
   sudo -u gitlab -i git clone git@localhost:gitolite-admin
   rm -rf gitolite-admin
 
