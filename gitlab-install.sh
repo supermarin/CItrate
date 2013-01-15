@@ -3,25 +3,11 @@
 # Gitolite / GitlabHQ / GitlabCI installation script. OSX 10.8 and up.
 # Author: Marin Usalj [mneorr@gmail.com]
 
-create_group() {
-  dscl . -create /Groups/git
-  dscl . -append /Groups/git gid 789
-}
-create_user() {
-  dscl . -create /Users/$1
-  # dscl . -passwd /Users/$1 PASSWORD
-  dscl . -append /Users/$1 UserShell /bin/bash
-  dscl . -append /Users/$1 RealName "$1"
-  dscl . -append /Users/$1 UniqueID $RANDOM
-  dscl . -append /Users/$1 PrimaryGroupID 789
-  mkdir -p /Users/$1
-  chown -R $1:git /Users/$1
-  dscl . -append /Users/$1 NFSHomeDirectory /Users/$1
-}
+source functions.sh
 
 create_group
-create_user git
-create_user gitlab
+create_user git "Git"
+create_user gitlab "GitlabHQ"
 echo "Created users!"
 
 # GENERATE GITLAB SSH KEYS
@@ -61,10 +47,10 @@ cd /Users/gitlab
   rm -rf gitolite-admin
 
   # CLONE GITLABHQ
-  sudo -u gitlab -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+  sudo -u gitlab -H git clone https://github.com/mneorr/gitlabhq.git gitlab
   
   cd gitlab
-    sudo -u gitlab -H git checkout 4-0-stable
+    sudo -u gitlab -H git checkout 4.0-OSX
     
     # MAKE SURE GITLAB CAN WRITE TO THE LOG/ AND TMP/ DIRECTORIES
     sudo chown -R gitlab log/
@@ -85,8 +71,8 @@ cd /Users/gitlab
     echo "Installed Gitlab."
 
     # CONFIGURE DATABASE (PostgreSQL)
-    sudo -u $(whoami) createuser -S gitlab
-    sudo -u $(whoami) createdb -Ogitlab gitlabhq_production
+    createuser -S gitlab
+    #createdb -Ogitlab gitlabhq_production
     sudo perl -pi -e 's/postgres$/gitlab/g' config/database.yml
     sudo perl -pi -e 's/# host: localhost/host: localhost/' config/database.yml
     
