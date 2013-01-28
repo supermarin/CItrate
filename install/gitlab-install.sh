@@ -47,10 +47,11 @@ cd /Users/gitlab
   rm -rf gitolite-admin
 
   # CLONE GITLABHQ
-  sudo -u gitlab -H git clone https://github.com/mneorr/gitlabhq.git gitlab
+  sudo -u gitlab -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
   
   cd gitlab
-    sudo -u gitlab -H git checkout 4.0-OSX
+    sudo -u gitlab -H git checkout 4-1-stable
+    replace_home_dir_path
     
     # MAKE SURE GITLAB CAN WRITE TO THE LOG/ AND TMP/ DIRECTORIES
     sudo chown -R gitlab log/

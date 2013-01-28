@@ -2,6 +2,7 @@ create_group() {
   dscl . -create /Groups/git
   dscl . -append /Groups/git gid 789
 }
+# create_user "USERNAME" "REAL NAME"
 create_user() {
   dscl . -create /Users/$1
   # dscl . -passwd /Users/$1 PASSWORD
@@ -62,4 +63,7 @@ install_redis() {
     launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
     echo "Installed Redis."
   fi
+}
+replace_home_dir_path() {
+  perl -pi -e 's/\/home\//\/Users\//g' $(find . -type f | grep -Ev '.git') 
 }
