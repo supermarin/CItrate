@@ -27,7 +27,7 @@ install_pip() {
 sudo systemsetup -setremotelogin on 
 
 # Link /Users to /home
-sudo replace_home_dir_path
+replace_home_dir_path
 
 # INSTALL PROGRAMS
 install_homebrew
@@ -41,7 +41,7 @@ echo "Installed brew packages."
 
 # INSTALL RUBY - 1.9.3 TODO
 
-sudo install_pip
+install_pip
 install_pygments
 install_bundler
 install_charlock_holmes

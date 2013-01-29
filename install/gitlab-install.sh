@@ -17,7 +17,7 @@ sudo -u gitlab ssh-keygen -q -N '' -t rsa -f /Users/gitlab/.ssh/id_rsa
 cd /Users/git
 
   # CLONE / INSTALL GITOLITE
-  sudo -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git
+  sudo -u git -H git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git
   sudo -u git -H mkdir /Users/git/bin
   sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/Users/git/bin" "export PATH" >> /Users/git/.profile'
   sudo -u git -H sh -c 'gitolite/install -ln /Users/git/bin'
@@ -69,10 +69,11 @@ cd /Users/gitlab
     # INSTALL GEMS
     sudo -u gitlab -H bundle install --deployment --without development test mysql
     echo "Installed Gitlab."
-
-    # CONFIGURE DATABASE (PostgreSQL)
-    createuser -S gitlab
-    #createdb -Ogitlab gitlabhq_production
+    
+    echo "Creating gitlab postgres user"
+    createuser -d gitlab
+    sudo -u gitlab -H createdb -Ogitlab gitlabhq_production
+    
     sudo perl -pi -e 's/postgres$/gitlab/g' config/database.yml
     sudo perl -pi -e 's/# host: localhost/host: localhost/' config/database.yml
     

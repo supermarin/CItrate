@@ -24,13 +24,6 @@ install_homebrew() { # It checks for XCode and OSX versions
     echo "Installed homebrew."
   fi
 }
-#requires sudo
-install_pip() {
-  if [[ `which pip` == "pip not found" ]]; then
-    easy_install pip
-    echo "Installed pip."
-  fi
-}
 install_pygments() {
   if [[ `which pygmentize` == "pygmentize not found" ]]; then
     pip install pygments
@@ -48,13 +41,13 @@ install_charlock_holmes() {
     echo "Installed charlock holmes."
   fi
 }
-install_postgres() { # WARNING!!! THIS COULD ERASE THE DATA!!!!
+install_postgres() {
   if [[ `which psql` == "psql not found" ]]; then
     if [[ `brew install postgres` != *Error:* ]]; then
       initdb /usr/local/var/postgres -E utf8 # Initialize 
       ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents # Make it load on every boot
       launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist # Load it now
-      createuser -S postgres
+      createuser -s root # not sure if this is dangerous
       echo "Installed Postgres"
     else
       echo "Postgres was already installed"
@@ -68,12 +61,4 @@ install_redis() {
     launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
     echo "Installed Redis."
   fi
-}
-#requires sudo
-replace_home_dir_path() {
-  perl -pi -e 's/^\/home/#\/home/g' /etc/auto_master # move this to functions
-  automount -vc
-  umount /home
-  rmdir /home
-  ln -s /Users /home
 }

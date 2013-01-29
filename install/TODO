@@ -1,10 +1,6 @@
-1. Prepend /usr/local/bin to PATH. Fixes #1
-
-
 Bugs:
 1. Postgres prompted while creating user, maybe initdb: 
   - createuser failed after that
 
-2. Prompted for password from easy_install pip
-3. Prompted for (yes/no) adding ssh host
+3. Prompted for (yes/no) adding ssh host for gitolite-admin
 4. Prompted by postgres again when creating gitlab.
