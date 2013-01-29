@@ -78,4 +78,4 @@ cd /Users/gitlab
     sudo perl -pi -e 's/# host: localhost/host: localhost/' config/database.yml
     
     # INITIALIZE DATABASE AND ACTIVATE ADVANCED FEATURES
-    sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production

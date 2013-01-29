@@ -24,7 +24,7 @@ echo "Installed brew packages."
 
 # INSTALL RUBY - 1.9.3 TODO
 
-install_pip
+sudo install_pip
 install_pygments
 install_bundler
 install_charlock_holmes

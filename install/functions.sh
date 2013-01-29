@@ -1,7 +1,7 @@
 create_group() {
   dscl . -create /Groups/git
   dscl . -append /Groups/git gid 789
-}
+} 
 # create_user "USERNAME" "REAL NAME"
 create_user() {
   dscl . -create /Users/$1
@@ -19,12 +19,14 @@ install_homebrew() { # It checks for XCode and OSX versions
   if [[ `which homebrew` == "brew not found" ]]; then
     ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
     sudo chown -R `whoami` /usr/local
+    echo "export PATH=/usr/local/bin:$PATH" >> ~/.zshenv
+    echo "export PATH=/usr/local/bin:$PATH" >> ~/.bashrc #for users without zsh
     echo "Installed homebrew."
   fi
 }
 install_pip() {
   if [[ `which pip` == "pip not found" ]]; then
-    sudo easy_install pip
+    easy_install pip
     echo "Installed pip."
   fi
 }
@@ -46,14 +48,16 @@ install_charlock_holmes() {
   fi
 }
 install_postgres() { # WARNING!!! THIS COULD ERASE THE DATA!!!!
-  if [[ `brew install postgres` != *Error:* ]]; then
-    initdb /usr/local/var/postgres -E utf8 # Initialize 
-    ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents # Make it load on every boot
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist # Load it now
-    createuser -S postgres
-    echo "Installed Postgres"
-  else
-    echo "Postgres was already installed"
+  if [[ `which psql` == "psql not found" ]]; then
+    if [[ `brew install postgres` != *Error:* ]]; then
+      initdb /usr/local/var/postgres -E utf8 # Initialize 
+      ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents # Make it load on every boot
+      launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist # Load it now
+      createuser -S postgres
+      echo "Installed Postgres"
+    else
+      echo "Postgres was already installed"
+    fi
   fi
 }
 install_redis() {
