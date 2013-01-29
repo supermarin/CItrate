@@ -63,7 +63,7 @@ cd /Users/gitlab
     sudo -u gitlab cp config/database.yml.postgresql config/database.yml
 
     # SETUP GITLAB HOOKS
-    sudo cp ./lib/hooks/post-receive /Users/git/.gitolite/hooks/common/post-receive
+    sudo -u git cp /Users/gitlab/gitlab/lib/hooks/post-receive /Users/git/.gitolite/hooks/common/post-receive
     sudo chown git:git /Users/git/.gitolite/hooks/common/post-receive
 
     # INSTALL GEMS

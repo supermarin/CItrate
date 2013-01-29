@@ -1,6 +1,7 @@
 create_group() {
   dscl . -create /Groups/git
   dscl . -append /Groups/git gid 789
+  sudo sh -c 'printf "%b\n" "git:*:789:git,gitlab" >> /etc/group'
 } 
 # create_user "USERNAME" "REAL NAME"
 create_user() {
