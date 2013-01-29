@@ -24,6 +24,7 @@ install_homebrew() { # It checks for XCode and OSX versions
     echo "Installed homebrew."
   fi
 }
+#requires sudo
 install_pip() {
   if [[ `which pip` == "pip not found" ]]; then
     easy_install pip
@@ -68,6 +69,11 @@ install_redis() {
     echo "Installed Redis."
   fi
 }
+#requires sudo
 replace_home_dir_path() {
-  perl -pi -e 's/\/home\//\/Users\//g' $(find . -type f | grep -Ev '.git') 
+  perl -pi -e 's/^\/home/#\/home/g' /etc/auto_master # move this to functions
+  automount -vc
+  umount /home
+  rmdir /home
+  ln -s /Users /home
 }

@@ -6,11 +6,28 @@
 
 # HELPER FUNCTIONS
 # Should check for software existance before installing
-
 source functions.sh
+
+# ROOT FUNCTIONS
+replace_home_dir_path() {
+  sudo perl -pi -e 's/^\/home/#\/home/g' /etc/auto_master # move this to functions
+  sudo automount -vc
+  sudo umount /home
+  sudo rmdir /home
+  sudo ln -s /Users /home
+}
+install_pip() {
+  if [[ `which pip` == "pip not found" ]]; then
+    sudo easy_install pip
+    echo "Installed pip."
+  fi
+}
 
 # ENABLE REMOTE LOGIN
 sudo systemsetup -setremotelogin on 
+
+# Link /Users to /home
+sudo replace_home_dir_path
 
 # INSTALL PROGRAMS
 install_homebrew

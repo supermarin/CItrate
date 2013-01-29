@@ -51,7 +51,6 @@ cd /Users/gitlab
   
   cd gitlab
     sudo -u gitlab -H git checkout 4-1-stable
-    replace_home_dir_path
     
     # MAKE SURE GITLAB CAN WRITE TO THE LOG/ AND TMP/ DIRECTORIES
     sudo chown -R gitlab log/
