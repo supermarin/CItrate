@@ -1,7 +1,7 @@
 source functions.sh
 
 echo "Creating user Gitlab CI"
-create_user gitlab_ci "Gitlab CI"
+create_user gitlab_ci "GitlabCI"
 
 # sudo -u gitlab_ci -H sh -c 'printf "%b\n%b\n" "source /Users/gitlab_ci/.rvm/scripts/rvm" >> /Users/gitlab_ci/.profile'
 # sudo -u gitlab_ci -H -i source .profile

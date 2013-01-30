@@ -17,17 +17,17 @@ sudo -u gitlab ssh-keygen -q -N '' -t rsa -f /Users/gitlab/.ssh/id_rsa
 cd /Users/git
 
   # CLONE / INSTALL GITOLITE
-  sudo -u git -H git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git
+  sudo -u git -H git clone -b gl-v320 https://github.com/gitlabhq/gitolite.git /Users/git/gitolite
   sudo -u git -H mkdir /Users/git/bin
   sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/Users/git/bin" "export PATH" >> /Users/git/.profile'
   sudo -u git -H sh -c 'gitolite/install -ln /Users/git/bin'
 
   # COPY GITLAB'S SSH PUBLIC KEY
-  sudo -u git -H ln -s /Users/gitlab/.ssh/id_rsa.pub GitlabAdmin.pub
-  chmod 0444 GitlabAdmin.pub
+  sudo cp /Users/gitlab/.ssh/id_rsa.pub /Users/git/gitlab.pub
+  sudo chmod 0444 /Users/git/gitlab.pub
 
   #INITIALIZE GITOLITE
-  sudo -u git -i gitolite/src/gitolite setup -pk GitlabAdmin.pub
+  sudo -u git -H sh -c "PATH=/Users/git/bin:$PATH; gitolite setup -pk /Users/git/gitlab.pub"
 
   # SET CONFIG PERMISSIONS
   sudo chmod 750 /Users/git/.gitolite/
@@ -77,6 +77,10 @@ cd /Users/gitlab
     sudo perl -pi -e 's/postgres$/gitlab/g' config/database.yml
     sudo perl -pi -e 's/# host: localhost/host: localhost/' config/database.yml
     
+    # CONFIGURE GIT
+    sudo -u gitlab -H git config --global user.name "GitLab"
+    sudo -u gitlab -H git config --global user.email "gitlab@localhost"
+
     # INITIALIZE DATABASE AND ACTIVATE ADVANCED FEATURES
     sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
     # TEST PRODUCTION:
