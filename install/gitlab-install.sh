@@ -79,3 +79,5 @@ cd /Users/gitlab
     
     # INITIALIZE DATABASE AND ACTIVATE ADVANCED FEATURES
     sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
+    # TEST PRODUCTION:
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production

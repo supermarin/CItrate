@@ -43,16 +43,31 @@ install_charlock_holmes() {
   fi
 }
 install_postgres() {
-  if [[ `which psql` == "psql not found" ]]; then
-    if [[ `brew install postgres` != *Error:* ]]; then
-      initdb /usr/local/var/postgres -E utf8 # Initialize 
-      ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents # Make it load on every boot
-      launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist # Load it now
-      createuser -s root # not sure if this is dangerous
-      echo "Installed Postgres"
-    else
-      echo "Postgres was already installed"
+  if [[ `brew install postgres` != *'already installed'* ]]; then
+    initdb /usr/local/var/postgres -E utf8 # Initialize 
+    ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents # Make it load on every boot
+    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist # Load it now
+    createuser -s root # not sure if this is dangerous
+    echo "Installed Postgres"
+  else
+    echo "Postgres was already installed"
+  fi
+}
+install_mysql() {
+  output=`brew install mysql`
+  if [[ $output == *'already installed'* ]]; then
+    echo "MySQL was already installed"
+  else
+    if [[ $output == *'Could not link mysql'* ]]; then
+      `brew link --overwrite mysql`
     fi
+    mysql_install_db --verbose --user=`whoami` --basedir="$(brew --prefix mysql)" --datadir=/usr/local/var/mysql --tmpdir=/tmp
+    ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents # Make it load on every boot
+    mysql.server start # Load it now
+    echo "Installed MySQL. Don't forget to set your root password!!! You can do it with following commands:
+
+    /usr/local/opt/mysql/bin/mysqladmin -u root password 'new-password'
+    /usr/local/opt/mysql/bin/mysqladmin -u root -h $(hostname) password 'new-password'"
   fi
 }
 install_redis() {
